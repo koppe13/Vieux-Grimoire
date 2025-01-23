@@ -13,7 +13,7 @@ exports.signup = (req, res, next) => {
             .then(() => res.status(201).json({ message: 'utilisateur cree'}))
             .catch(error => res.status(400).json({ error }));        
     })
-    .catch(error => res.status(500).json({ error }));
+      .catch(error => res.status(500).json({ error }));
 
 };
 
@@ -25,6 +25,7 @@ exports.login = (req, res, next) => {
             } else {
                 bcrypt.compare(req.body.password, user.password)
                     .then(valid => {
+                        console.log(valid)
                         if (!valid) {
                             res.status(401).json({message: 'paire identifiant/mot de passe incorrecte'})
                         } else {

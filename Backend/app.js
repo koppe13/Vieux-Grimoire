@@ -5,10 +5,6 @@ const path = require('path');
 const bookRoutes = require('./routes/books');
 const userRoutes = require('./routes/user'); 
 
-
-
-
-
 mongoose.connect('mongodb+srv://phenixairsoft2:Babylon1974@koppe.hui2h.mongodb.net/?retryWrites=true&w=majority&appName=koppe',
    { useNewUrlParser: true,
      useUnifiedTopology: true })
@@ -23,9 +19,10 @@ app.use((req, res, next) => {
    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
    next();
  });
+
  app.use(bodyParser.json());
  app.use('/api/books', bookRoutes);
  app.use('/api/auth', userRoutes);
-app.use('/images', express.static(path.join(__dirname, 'images')));
+ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;

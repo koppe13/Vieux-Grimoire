@@ -17,7 +17,7 @@ exports.createBooks = (req, res, next) => {
 
 exports.modifyBooks = (req, res, next) => {
     const booksObject = req.file ? {
-        ...JSON.parse(req.body.books),
+        ...JSON.parse(req.body.book),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
   
@@ -35,8 +35,8 @@ exports.modifyBooks = (req, res, next) => {
         .catch((error) => {
             res.status(400).json({ error });
         });
- };
 }
+
 
 exports.deleteBooks = (req, res, next) => {
   Books.deleteOne({ _id: req.params.id })
