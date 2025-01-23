@@ -36,7 +36,20 @@ exports.modifyBooks = (req, res, next) => {
             res.status(400).json({ error });
         });
 }
-
+exports.notationBooks = (req, res, next) => {
+  
+  Books.findOne({_id: req.params.id})
+      .then((books) => {
+        if(books.ratings.find(userId => userId !== req.auth.userId)) {
+          console.log('ok')
+        } else {
+          console.log('nok')
+        }
+      })
+      .catch((error) => {
+          res.status(400).json({ error });
+      });
+}
 
 exports.deleteBooks = (req, res, next) => {
   Books.deleteOne({ _id: req.params.id })
