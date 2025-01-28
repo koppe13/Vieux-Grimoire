@@ -40,10 +40,25 @@ exports.notationBooks = (req, res, next) => {
   
   Books.findOne({_id: req.params.id})
       .then((books) => {
-        if(books.ratings.find(userId => userId !== req.auth.userId)) {
-          console.log('ok')
-        } else {
-          console.log('nok')
+        if(books.ratings.find(userId => userId !== req.auth.userId && req.body.rating <= 5 && req.body.rating >= 0)) {
+          
+          const notationTableau = books.ratings
+          notationTableau.push({userId: req.auth.userId, grade: req.body.rating})
+          
+          const notationMoyenne = notationTableau.map((note) => note.grade)
+          const test = 0
+
+          for (let i of notationMoyenne) {
+            test += notationMoyenne[i];
+          }
+
+          console.log(notationMoyenne, test)
+
+
+          //Books.updateOne({_id: req.params.id}, {ratings: notationTableau})
+              //.then(() => res.status(200).json({message : 'note créée!',id: req.params.id}))
+              //.catch(error => res.status(401).json({ error }));
+          
         }
       })
       .catch((error) => {
