@@ -46,24 +46,28 @@ exports.notationBooks = (req, res, next) => {
           notationTableau.push({userId: req.auth.userId, grade: req.body.rating})
           
           const notationMoyenne = notationTableau.map((note) => note.grade)
-          const test = 0
-
-          for (let i of notationMoyenne) {
-            test += notationMoyenne[i];
-          }
-
-          console.log(notationMoyenne, test)
-
-
-          //Books.updateOne({_id: req.params.id}, {ratings: notationTableau})
-              //.then(() => res.status(200).json({message : 'note créée!',id: req.params.id}))
-              //.catch(error => res.status(401).json({ error }));
+          console.log(notationMoyenne)
+          const sommeNotation = notationMoyenne.reduce(
+            (addition, valeur) => addition + valeur / notationMoyenne.length, 0,
+          );
+          console.log(sommeNotation)
+          
+          Books.updateOne({_id: req.params.id}, {ratings: notationTableau, averageRating: sommeNotation})
+              .then(() => res.status(200).json({message : 'note créée!',id: req.params.id}))
+              .catch(error => res.status(401).json({ error }));
           
         }
       })
       .catch((error) => {
           res.status(400).json({ error });
       });
+}
+
+exports.bestRatingBooks = (req, res, next) => {
+        Books.findAll().sort({averageRating: -1}).limit(3)     
+        .then((meilleurs) => res.status(200).json(meilleurs))
+        .catch(error => res.status(401).json({ error }));
+
 }
 
 exports.deleteBooks = (req, res, next) => {
