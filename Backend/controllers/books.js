@@ -48,15 +48,14 @@ exports.notationBooks = (req, res, next) => {
           const notationMoyenne = notationTableau.map((note) => note.grade)
           console.log(notationMoyenne)
           const sommeNotation = notationMoyenne.reduce(
-            (addition, valeur) => addition + valeur / notationMoyenne.length, 0,
+            (addition, valeur) => Math.round( addition + valeur / notationMoyenne.length), 0,
           );
-          console.log(sommeNotation)
           
           Books.updateOne({_id: req.params.id}, {ratings: notationTableau, averageRating: sommeNotation})
-              .then(() => res.status(200).json({message : 'note créée!',id: req.params.id}))
+              .then(() => res.status(200).json())
               .catch(error => res.status(401).json({ error }));
           
-        }
+        }; res.status(200).json(books)
       })
       .catch((error) => {
           res.status(400).json({ error });
@@ -64,8 +63,9 @@ exports.notationBooks = (req, res, next) => {
 }
 
 exports.bestRatingBooks = (req, res, next) => {
-        Books.findAll().sort({averageRating: -1}).limit(3)     
+        Books.find().sort({averageRating: -1}).limit(3)     
         .then((meilleurs) => res.status(200).json(meilleurs))
+        
         .catch(error => res.status(401).json({ error }));
 
 }
