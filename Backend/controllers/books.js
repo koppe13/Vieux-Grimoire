@@ -6,6 +6,7 @@ exports.createBooks = (req, res, next) => {
     delete booksObject._userId;
     const books = new Books({
       ...booksObject,
+      //recup de l'authentification du token api, plutot que l'user Id renvoyé par le front 
       userId: req.auth.userId,
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
@@ -44,7 +45,7 @@ exports.notationBooks = (req, res, next) => {
           
           const notationTableau = books.ratings
           notationTableau.push({userId: req.auth.userId, grade: req.body.rating})
-          
+          //avec securisation par token et non par user Id du front
           const notationMoyenne = notationTableau.map((note) => note.grade)
           console.log(notationMoyenne)
           const sommeNotation = notationMoyenne.reduce(
@@ -54,9 +55,9 @@ exports.notationBooks = (req, res, next) => {
           Books.updateOne({_id: req.params.id}, {ratings: notationTableau, averageRating: sommeNotation})
               .then(() => res.status(200).json())
               .catch(error => res.status(401).json({ error }));
-          
+          //renvoi
         }; res.status(200).json(books)
-      })
+      }) //renvoi des infos pour la mise a jour de la fiche
       .catch((error) => {
           res.status(400).json({ error });
       });
