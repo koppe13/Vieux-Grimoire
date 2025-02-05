@@ -16,7 +16,6 @@ const imageUpload = (req, res, next) => {
   upload.single('image')(req, res, async () => {
     const resized = await sharp(req.file.buffer)
     .resize(500,500)
-    .toFormat('jpg')
     .jpeg({ quality: 80 })
     .toBuffer()
 
