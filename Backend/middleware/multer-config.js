@@ -1,23 +1,38 @@
 const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path')
 
 const MIME_TYPES = {
   'image/jpg': 'jpg',
   'image/jpeg': 'jpg',
-  'image/png': 'png'
+  'image/png': 'png',
 };
 
+const storage = multer.memoryStorage();
+const upload = multer({storage: storage});
 
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, 'images');
-  },
-  filename: (req, file, callback) => {
+const imageUpload = (req, res, next) => {
+  upload.single('image')(req, res, async () => {
+    const resized = await sharp(req.file.buffer)
+    .resize(500,500)
+    .toFormat('jpg')
+    .jpeg({ quality: 80 })
+    .toBuffer()
+
+    const extension = MIME_TYPES[req.file.mimetype];
     const booksObject = JSON.parse(req.body.book);
-    const extension = MIME_TYPES[file.mimetype];
-    callback(null, booksObject.title.split(' ').join('_') + req.auth.userId + Date.now() + '.' + extension);
-  },
-  
-     
-});
+    const fileName = booksObject.title.split(' ').join('_') + req.auth.userId + Date.now() + '.' + extension;
+    const outPutPath = path.join(__dirname, '../images', fileName);
 
-module.exports = multer({storage: storage, limits: {fileSize: 1024 * 1024 * 1}}).single('image');
+    fs.writeFileSync(outPutPath, resized);
+
+    req.file.path = outPutPath;
+    req.file.filename = fileName;
+
+    next();
+  })
+  
+}
+
+module.exports = imageUpload
