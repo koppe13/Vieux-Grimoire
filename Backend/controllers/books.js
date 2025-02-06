@@ -47,7 +47,6 @@ exports.notationBooks = (req, res, next) => {
           notationTableau.push({userId: req.auth.userId, grade: req.body.rating})
           //avec securisation par token et non par user Id du front
           const notationMoyenne = notationTableau.map((note) => note.grade)
-          console.log(notationMoyenne)
           const sommeNotation = notationMoyenne.reduce(
             (addition, valeur) => Math.round( addition + valeur / notationMoyenne.length), 0,
           );
