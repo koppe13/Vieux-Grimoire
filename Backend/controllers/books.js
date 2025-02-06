@@ -41,7 +41,7 @@ exports.notationBooks = (req, res, next) => {
   
   Books.findOne({_id: req.params.id})
       .then((books) => {
-        if(books.ratings.find(userId => userId !== req.auth.userId && req.body.rating <= 5 && req.body.rating >= 1)) {
+        if(books.ratings.find(userId => userId !== req.auth.userId && req.body.rating <= 5 && req.body.rating >= 0)) {
           
           const notationTableau = books.ratings
           notationTableau.push({userId: req.auth.userId, grade: req.body.rating})

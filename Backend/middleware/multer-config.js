@@ -14,9 +14,9 @@ const upload = multer({storage: storage});
 
 const imageUpload = (req, res, next) => {
   upload.single('image')(req, res, async () => {
+  if (req.file) {
     const resized = await sharp(req.file.buffer)
     .resize(500,500)
-    .jpeg({ quality: 80 })
     .toBuffer()
 
     const extension = MIME_TYPES[req.file.mimetype];
@@ -30,6 +30,9 @@ const imageUpload = (req, res, next) => {
     req.file.filename = fileName;
 
     next();
+  } else {
+    next();
+  }
   })
   
 }
