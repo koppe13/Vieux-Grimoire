@@ -5,8 +5,10 @@ require('dotenv').config();
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
+    //salage avec 10 inserts aléatoire
       .then(hash => {
         const user = new User({
+        //recup du model pour unicité du mail
           email: req.body.email,
           password: hash   
         });
